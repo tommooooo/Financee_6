@@ -1,78 +1,43 @@
 <!DOCTYPE html>
-<!--
-Modifiche applicate:
-1. Sezione Panoramica: pulsante Salva Stipendio allineato a destra nella stessa riga dell'input.
-2. Sezione Categorie: pulsante Aggiungi allineato a destra nella stessa riga dell'input, contrasto del testo del pulsante migliorato.
-3. Seleziona Mese: tabella responsive con layout fisso e overflow-x abilitato.
-4. Pulsante Condividi (🔗) al posto di Esporta in PDF nella sezione Seleziona Mese.
--->
-
 <html lang="it">
 <head>
-  <!-- Prevent Safari from caching for rapid development -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--
+  Personal Finance PWA
+  Modifiche:
+  - Pulsanti allineati all'interno delle sezioni.
+  - Tabella responsive in Seleziona Mese.
+  - Icona Condividi in Seleziona Mese;
+  - Eliminazione transazioni per mese dal menu laterale.
+  -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Finanze Personali Light</title>
   <style>
     body { font-family: sans-serif; margin: 0; padding: 0; background: #f5f5f5; color: #333; }
-    header { position: relative; background: #0066cc; color: #fff; padding: 1rem; display: flex; align-items: center; justify-content: center; }
-    #menu-btn { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; background: none; border: none; color: #fff; cursor: pointer; }
-    header h1 { margin: 0; font-size: 1.5rem; }
-    main { padding: 2rem; max-width: 600px; margin: auto; }
-    section { margin-bottom: 2rem; background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: none; position: relative; }
+    header { background: #0066cc; color: #fff; padding: 1rem; display: flex; justify-content: center; align-items: center; position: relative; }
+    #menu-btn { position: absolute; left: 1rem; font-size: 1.5rem; background: none; border: none; color: #fff; cursor: pointer; }
+    h1 { margin: 0; font-size: 1.5rem; }
+    main { max-width: 600px; margin: auto; padding: 2rem; }
+    section { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 2rem; padding: 2rem; display: none; }
     section.active { display: block; }
-    form { display: grid; gap: 1rem; }
-    input, select, button {
-      padding: 0.75rem;
-      font-size: 1rem;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background: #f9f9f9;
-    }
-    select {
-      appearance: menulist-button;
-      -webkit-appearance: menulist-button;
-      width: 100%;
-      z-index: 2;
-    }
-    /* Date picker styled like buttons */
-    #dash-tx-form input[type="date"] {
-      appearance: none;
-      background: #0066cc;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .summary { font-weight: bold; margin-bottom: 1rem; }
-    .flex { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; }
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; }
-    th { background: #eee; }
-    .delete-btn { background: transparent; border: none; color: #c00; cursor: pointer; font-size: 1.2rem; }
-    #sidebar { position: fixed; top: 0; left: 0; width: 250px; height: 100%; background: #fff; box-shadow: 2px 0 5px rgba(0,0,0,0.2); transform: translateX(-100%); transition: transform 0.3s ease; z-index: 1000; padding: 1rem; }
-    #sidebar ul { list-style: none; padding: 0; }
-    #sidebar li { margin: 1rem 0; }
-    #sidebar button { background: none; border: none; color: #0066cc; font-size: 1rem; cursor: pointer; }
-    /* Flex forms full width */
-    .flex { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; width: 100%; }
+    .flex { display: flex; align-items: center; gap: 1rem; width: 100%; margin-bottom: 1rem; }
     .flex > input { flex: 1; }
-    .flex button { margin-left: 0; }
-    /* Table wrapper for months section */
-    #month-preview table { width: 100%; table-layout: fixed; }
-    #month-preview { overflow-x: auto; }
-
+    form { display: grid; gap: 1rem; }
+    input, select, button { padding: 0.75rem; font-size: 1rem; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9; }
+    select { appearance: menulist-button; width: 100%; }
+    input[type="date"] { appearance: none; background: #0066cc; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; table-layout: fixed; }
+    th, td { padding: 0.5rem; border: 1px solid #ddd; text-align: left; }
+    th { background: #eee; }
+    .summary { font-weight: bold; margin-bottom: 1rem; }
+    .delete-btn { background: none; border: none; color: #c00; cursor: pointer; font-size: 1.2rem; }
+    #sidebar { position: fixed; top: 0; left: 0; width: 250px; height: 100%; background: #fff; box-shadow: 2px 0 5px rgba(0,0,0,0.2); transform: translateX(-100%); transition: transform 0.3s ease; z-index: 1000; padding: 1rem; }
     #sidebar.active { transform: translateX(0); }
     #sidebar ul { list-style: none; padding: 0; }
     #sidebar li { margin: 1rem 0; }
-    #sidebar button { background: none; border: none; color: #0066cc; font-size: 1rem; cursor: pointer; }
     #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); display: none; z-index: 500; }
     #overlay.active { display: block; }
-    #dash-cat-detail { margin-top: 2rem; }
-    #pie-chart { margin-top: 2rem; }
+    #month-preview { overflow-x: auto; }
   </style>
 </head>
 <body>
@@ -86,13 +51,12 @@ Modifiche applicate:
       <li><button id="link-dashboard">Dashboard</button></li>
       <li><button id="link-cats">Categorie</button></li>
       <li><button id="link-months">Visione Mese</button></li>
-      <li id="delete-section">
+      <li>
         <select id="delete-month-select"></select>
         <button id="delete-tx-btn" class="delete-btn">🗑️</button>
       </li>
     </ul>
   </nav>
-
   <main>
     <section id="dashboard-section" class="active">
       <h2>📊 Panoramica</h2>
@@ -115,7 +79,7 @@ Modifiche applicate:
         <thead><tr><th>Categoria</th><th>Spesa (€)</th></tr></thead>
         <tbody id="dash-cat-list"></tbody>
       </table>
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:2rem;">
+      <div class="flex" style="justify-content: space-between; margin-top:2rem;">
         <label for="dash-cat-select">Dettagli Categoria:</label>
         <select id="dash-cat-select"><option value="">Seleziona categoria</option></select>
       </div>
@@ -123,19 +87,20 @@ Modifiche applicate:
       <canvas id="pie-chart"></canvas>
       <div id="pie-msg" class="summary"></div>
     </section>
-
     <section id="cats-section">
       <h2>🎨 Categorie</h2>
-      <form id="cat-form" class="flex">
-        <input type="text" id="new-cat" placeholder="Nuova categoria" required />
-        <button type="submit">Aggiungi</button>
-      </form>
+      <div class="flex">
+        <input type="text" id="new-cat" placeholder="Nuova categoria" />
+        <button id="add-cat-btn" style="background: #0066cc; color: #fff;">Aggiungi</button>
+      </div>
       <ul id="cat-list"></ul>
     </section>
-
     <section id="months-section">
       <h2>🔍 Seleziona Mese</h2>
-      <select id="month-select"></select>
+      <div style="position: relative;">
+        <select id="month-select"></select>
+        <button id="share-months" style="position: absolute; right: 0; top: 0;">🔗</button>
+      </div>
       <div id="month-preview" style="margin-top:1rem; display:none;">
         <div class="summary" id="balance-preview">Saldo: €0.00</div>
         <div class="summary" id="expense-preview">Totale spese: €0.00</div>
@@ -146,7 +111,6 @@ Modifiche applicate:
         </table>
       </div>
     </section>
-
     <section id="detail-section">
       <h2>📈 Dettaglio Mese</h2>
       <div class="summary" id="balance-detail">Saldo: €0.00</div>
@@ -160,40 +124,24 @@ Modifiche applicate:
       <div id="detail-pie-msg" class="summary"></div>
     </section>
   </main>
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Inline Service Worker for network-first, no cache -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      const swCode = `
-self.addEventListener('install', e => self.skipWaiting());
-self.addEventListener('activate', e => self.clients.claim());
-self.addEventListener('fetch', e => {
-  e.respondWith(fetch(e.request, {cache: 'no-store'}).catch(() => caches.match(e.request)));
-});`;
-      const blob = new Blob([swCode], { type: 'application/javascript' });
-      navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(console.error);
-    }
-  </script>
-  <script>
-    // Quick fix: unregister any Service Worker to avoid stale cache
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
-    }
-  </script>
   <script>
     // Sidebar toggle
     const menuBtn = document.getElementById('menu-btn');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
-    menuBtn.addEventListener('click', () => { sidebar.classList.toggle('active'); overlay.classList.toggle('active'); });
-    overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); });
-
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+    });
     // Data stores
     let txs = JSON.parse(localStorage.getItem('txs') || '[]');
     let cats = JSON.parse(localStorage.getItem('cats') || JSON.stringify(['Spesa','Trasporti','Divertimento']));
     let salaries = JSON.parse(localStorage.getItem('salaries') || '{}');
-
     const saveAll = () => {
       localStorage.setItem('txs', JSON.stringify(txs));
       localStorage.setItem('cats', JSON.stringify(cats));
@@ -203,216 +151,82 @@ self.addEventListener('fetch', e => {
       const d = new Date(dateStr);
       return `${d.getFullYear()}-${('0'+(d.getMonth()+1)).slice(-2)}`;
     };
-
-    let pieChartInstance = null;
-    let detailPieInstance = null;
-    let previewPieInstance = null;
-
-    // Render Categorie
+    let pieChartInstance, previewPieInstance;
     function renderCats() {
-      const catList = document.getElementById('cat-list');
+      const list = document.getElementById('cat-list');
       const dashCat = document.getElementById('dash-cat');
-      catList.innerHTML = '';
+      list.innerHTML = '';
       dashCat.innerHTML = '';
-      const storedColors = JSON.parse(localStorage.getItem('catColors') || '{}');
-      cats.forEach((c,i) => {
+      cats.forEach(c => {
         const li = document.createElement('li');
-        li.style.display = 'flex'; li.style.alignItems = 'center'; li.style.justifyContent = 'space-between'; li.style.position = 'relative';
-        const container = document.createElement('div');
-        container.style.display = 'flex'; container.style.alignItems = 'center'; container.style.gap = '1rem';
-
-        const swatch = document.createElement('div');
-        swatch.style.width = '16px'; swatch.style.height = '16px';
-        swatch.style.backgroundColor = storedColors[c] || '#cccccc';
-        swatch.style.border = '1px solid #000'; swatch.style.cursor = 'pointer';
-
-        const colorInput = document.createElement('input');
-        colorInput.type = 'color'; colorInput.value = storedColors[c] || '#cccccc';
-        colorInput.style.position = 'absolute';
-        colorInput.style.left = '-60px'; colorInput.style.top = '50%';
-        colorInput.style.transform = 'translateY(-50%)'; colorInput.style.display = 'none';
-
-        const confirmBtn = document.createElement('button');
-        confirmBtn.textContent = 'Conferma'; confirmBtn.style.display = 'none';
-        confirmBtn.style.marginLeft = '1rem';
-
-        swatch.addEventListener('click', () => {
-          colorInput.style.display = '';
-          confirmBtn.style.display = '';
-        });
-        confirmBtn.addEventListener('click', () => {
-          storedColors[c] = colorInput.value;
-          localStorage.setItem('catColors', JSON.stringify(storedColors));
-          swatch.style.backgroundColor = colorInput.value;
-          colorInput.style.display = 'none';
-          confirmBtn.style.display = 'none';
-          renderDashboard();
-        });
-
-        const span = document.createElement('span'); span.textContent = c;
-        container.append(swatch, span, colorInput, confirmBtn);
-
-        const delBtn = document.createElement('button');
-        delBtn.textContent = '🗑️'; delBtn.className = 'delete-btn';
-        delBtn.addEventListener('click', () => {
-          cats.splice(i,1);
-          saveAll();
-          renderCats();
-          renderDashboard();
-        });
-
-        li.append(container, delBtn);
-        catList.append(li);
-
-        const opt = document.createElement('option'); opt.value = c; opt.textContent = c;
+        li.textContent = c;
+        list.append(li);
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
         dashCat.append(opt);
       });
     }
-
-    // Render Dashboard
     function renderDashboard() {
       const m = getMonthKey(new Date());
       const filtered = txs.filter(t => getMonthKey(t.date) === m);
-      const totalExp = filtered.reduce((s,t) => s + t.amt, 0);
+      const totalExp = filtered.reduce((sum,t) => sum + t.amt, 0);
       const salary = salaries[m] || 0;
       document.getElementById('balance-summary').textContent = `Saldo: €${(salary-totalExp).toFixed(2)}`;
       document.getElementById('expense-summary').textContent = `Totale spese: €${totalExp.toFixed(2)}`;
-
       const catMap = {};
-      filtered.forEach(t => catMap[t.cat] = (catMap[t.cat] || 0) + t.amt);
-      document.getElementById('dash-cat-list').innerHTML = Object.entries(catMap)
-        .map(([c,v]) => `<tr><td>${c}</td><td>€${v.toFixed(2)}</td></tr>`).join('');
-      // Popola la tendina Dettagli Categoria
+      filtered.forEach(t => catMap[t.cat] = (catMap[t.cat]||0)+t.amt);
+      document.getElementById('dash-cat-list').innerHTML = Object.entries(catMap).map(([c,v]) => `<tr><td>${c}</td><td>€${v.toFixed(2)}</td></tr>`).join('');
       const dashCatSelect = document.getElementById('dash-cat-select');
       dashCatSelect.innerHTML = '<option value="">Seleziona categoria</option>' +
         Object.keys(catMap).map(c => `<option value="${c}">${c}</option>`).join('');
-
       const labels = Object.keys(catMap);
       const data = Object.values(catMap);
-      const storedColors = JSON.parse(localStorage.getItem('catColors') || '{}');
-      const bgColors = labels.map(l => storedColors[l] || '#cccccc');
-
+      const colors = labels.map(l => JSON.parse(localStorage.getItem('catColors')||'{}')[l]||'#cccccc');
       const ctx = document.getElementById('pie-chart').getContext('2d');
-      if (pieChartInstance) pieChartInstance.destroy();
-      pieChartInstance = new Chart(ctx, {
-        type: 'pie',
-        data: { labels, datasets: [{ data, backgroundColor: bgColors }] }
-      });
+      if(pieChartInstance) pieChartInstance.destroy();
+      pieChartInstance = new Chart(ctx,{type:'pie',data:{labels,datasets:[{data,backgroundColor:colors}]}});
     }
-
-    // Render Months Dropdown
     function renderMonths() {
       const sel = document.getElementById('month-select');
-      const keys = Array.from(new Set(txs.map(t => getMonthKey(t.date))));
-      keys.sort().reverse();
-      sel.innerHTML = `<option value="">Seleziona mese</option>` + keys.map(k => `<option value="${k}">${k}</option>`).join('');
+      const keys = Array.from(new Set(txs.map(t=>getMonthKey(t.date)))).sort().reverse();
+      sel.innerHTML = '<option value="">Seleziona mese</option>' + keys.map(k=>`<option value="${k}">${k}</option>`).join('');
     }
-
-    // Render Detail Month
-    function renderDetail(month) {
-      const filtered = txs.filter(t => getMonthKey(t.date) === month);
-      const totalExp = filtered.reduce((s,t) => s + t.amt, 0);
-      const salary = salaries[month] || 0;
-      document.getElementById('balance-detail').textContent = `Saldo: €${(salary-totalExp).toFixed(2)}`;
-      document.getElementById('expense-detail').textContent = `Totale spese: €${totalExp.toFixed(2)}`;
-      document.getElementById('tx-list').innerHTML = filtered
-        .map(t => `<tr><td>${t.date}</td><td>${t.desc}</td><td>€${t.amt.toFixed(2)}</td><td>${t.cat}</td></tr>`)
-        .join('');
-
-      const labels = [...new Set(filtered.map(t => t.cat))];
-      const data = labels.map(l => filtered.filter(t => t.cat===l).reduce((s,t)=>s+t.amt,0));
-      const storedColors = JSON.parse(localStorage.getItem('catColors') || '{}');
-      const bgColors = labels.map(l => storedColors[l] || '#cccccc');
-      const ctx = document.getElementById('pie-detail').getContext('2d');
-      if (detailPieInstance) detailPieInstance.destroy();
-      detailPieInstance = new Chart(ctx, { type: 'pie', data: { labels, datasets: [{ data, backgroundColor: bgColors }] } });
-      document.getElementById('detail-pie-msg').textContent = labels.length ? '' : 'Nessuna spesa per questo mese';
+    function renderDetail(m) {
+      const filtered = txs.filter(t=>getMonthKey(t.date)===m);
+      const total = filtered.reduce((s,t)=>s+t.amt,0);
+      const salary = salaries[m]||0;
+      document.getElementById('balance-preview').textContent = `Saldo: €${(salary-total).toFixed(2)}`;
+      document.getElementById('expense-preview').textContent = `Totale spese: €${total.toFixed(2)}`;
+      document.getElementById('preview-tx-list').innerHTML = filtered.map(t=>`<tr><td>${t.date}</td><td>${t.desc}</td><td>€${t.amt.toFixed(2)}</td><td>${t.cat}</td></tr>`).join('');
+      const labels = [...new Set(filtered.map(t=>t.cat))];
+      const data = labels.map(l=>filtered.filter(t=>t.cat===l).reduce((s,t)=>s+t.amt,0));
+      const colors = labels.map(l => JSON.parse(localStorage.getItem('catColors')||'{}')[l]||'#cccccc');
+      const ctx2 = document.getElementById('pie-preview').getContext('2d');
+      if(previewPieInstance) previewPieInstance.destroy();
+      previewPieInstance = new Chart(ctx2,{type:'pie',data:{labels,datasets:[{data,backgroundColor:colors}]}});
     }
-
-    // Navigation
-    function showSection(id) {
-      ['dashboard-section','cats-section','months-section','detail-section'].forEach(s => 
-        document.getElementById(s).classList.toggle('active', s===id)
-      );
-    }
-    document.getElementById('link-dashboard').addEventListener('click', () => { showSection('dashboard-section'); sidebar.classList.remove('active'); overlay.classList.remove('active'); });
-    document.getElementById('link-cats').addEventListener('click', () => { showSection('cats-section'); sidebar.classList.remove('active'); overlay.classList.remove('active'); });
-    document.getElementById('link-months').addEventListener('click', () => { showSection('months-section'); sidebar.classList.remove('active'); overlay.classList.remove('active'); });
-    document.getElementById('export-pdf').addEventListener('click', () => window.print());
-
-    // Form Events
-    document.getElementById('save-salary-dash').addEventListener('click', () => {
-      const m = getMonthKey(new Date());
-      salaries[m] = parseFloat(document.getElementById('salary-input-dash').value) || 0;
-      saveAll(); renderDashboard();
+    document.getElementById('delete-tx-btn').addEventListener('click',()=>{
+      const sel = document.getElementById('delete-month-select').value;
+      if(!sel) return alert('Seleziona un mese');
+      if(!confirm(`Eliminare tutte le transazioni di ${sel}?`)) return;
+      txs = txs.filter(t=>getMonthKey(t.date)!==sel);
+      saveAll(); renderCats(); renderDashboard(); renderMonths();
     });
-    document.getElementById('dash-tx-form').addEventListener('submit', e => {
-      e.preventDefault();
-      txs.push({ date: document.getElementById('dash-date').value,
-                 desc: document.getElementById('dash-desc').value.trim(),
-                 amt: parseFloat(document.getElementById('dash-amt').value),
-                 cat: document.getElementById('dash-cat').value });
-      saveAll(); e.target.reset();
-      document.getElementById('dash-date').value = new Date().toISOString().slice(0,10);
-      renderDashboard();
+    document.getElementById('share-months').addEventListener('click',()=>{
+      if(navigator.share) navigator.share({title:document.title,url:window.location.href}); else window.print();
     });
-    document.getElementById('cat-form').addEventListener('submit', e => {
-      e.preventDefault();
-      const v = document.getElementById('new-cat').value.trim();
-      if (v && !cats.includes(v)) { cats.push(v); saveAll(); document.getElementById('new-cat').value=''; renderCats(); renderDashboard(); }
-    });
-
-    // Dash category select listener for details
-    document.getElementById('dash-cat-select').addEventListener('change', e => {
-      const sel = e.target.value;
-      const dashDetail = document.getElementById('dash-cat-detail');
-      dashDetail.innerHTML = '';
-      if (!sel) return;
-      const m = getMonthKey(new Date());
-      const filtered = txs.filter(t => getMonthKey(t.date) === m && t.cat === sel);
-      const ul = document.createElement('ul');
-      filtered.forEach(t => {
-        const li = document.createElement('li');
-        li.textContent = `${t.date} - €${t.amt.toFixed(2)}: ${t.desc}`;
-        ul.append(li);
-      });
-      dashDetail.append(ul);
-    });
-
-    // Month select listener for preview
-    document.getElementById('month-select').addEventListener('change', e => {
-      const month = e.target.value;
-      const preview = document.getElementById('month-preview');
-      if (!month) { preview.style.display = 'none'; return; }
-      // compute preview data
-      const filtered = txs.filter(t => getMonthKey(t.date) === month);
-      const totalExp = filtered.reduce((s,t) => s + t.amt, 0);
-      const salary = salaries[month] || 0;
-      document.getElementById('balance-preview').textContent = `Saldo: €${(salary - totalExp).toFixed(2)}`;
-      document.getElementById('expense-preview').textContent = `Totale spese: €${totalExp.toFixed(2)}`;
-      // transactions list
-      document.getElementById('preview-tx-list').innerHTML = filtered.map(t =>
-        `<tr><td>${t.date}</td><td>${t.desc}</td><td>€${t.amt.toFixed(2)}</td><td>${t.cat}</td></tr>`
-      ).join('');
-      // preview chart
-      const labels = [...new Set(filtered.map(t => t.cat))];
-      const data = labels.map(l => filtered.filter(t => t.cat === l).reduce((s,t) => s + t.amt, 0));
-      const storedColors = JSON.parse(localStorage.getItem('catColors') || '{}');
-      const bgColors = labels.map(l => storedColors[l] || '#cccccc');
-      const ctx = document.getElementById('pie-preview').getContext('2d');
-      if (previewPieInstance) previewPieInstance.destroy();
-      previewPieInstance = new Chart(ctx, { type: 'pie', data: { labels, datasets: [{ data, backgroundColor: bgColors }] } });
-      preview.style.display = '';
-    });
-
-    // Init
-    window.addEventListener('load', () => {
-      document.getElementById('dash-date').value = new Date().toISOString().slice(0,10);
-      renderCats(); renderMonths(); renderDashboard(); showSection('dashboard-section');
-    });
-    // Close sidebar if clicking inside main
-    document.querySelector('main').addEventListener('click', () => {
-      sidebar.classList.remove('active');
-      overlay.classList.remove('active');
-    });
+    function showSection(id){['dashboard-section','cats-section','months-section','detail-section'].forEach(s=>document.getElementById(s).classList.toggle('active',s===id));}
+    document.getElementById('link-dashboard').addEventListener('click',()=>{showSection('dashboard-section');sidebar.classList.remove('active');overlay.classList.remove('active');});
+    document.getElementById('link-cats').addEventListener('click',()=>{showSection('cats-section');sidebar.classList.remove('active');overlay.classList.remove('active');});
+    document.getElementById('link-months').addEventListener('click',()=>{showSection('months-section');sidebar.classList.remove('active');overlay.classList.remove('active');});
+    document.getElementById('save-salary-dash').addEventListener('click',()=>{const m=getMonthKey(new Date());salaries[m]=parseFloat(document.getElementById('salary-input-dash').value)||0;saveAll();renderDashboard();});
+    document.getElementById('dash-tx-form').addEventListener('submit',e=>{e.preventDefault();txs.push({date:document.getElementById('dash-date').value,desc:document.getElementById('dash-desc').value,amt:parseFloat(document.getElementById('dash-amt').value),cat:document.getElementById('dash-cat').value});saveAll();e.target.reset();document.getElementById('dash-date').value=new Date().toISOString().slice(0,10);renderDashboard();renderMonths();});
+    document.getElementById('add-cat-btn').addEventListener('click',()=>{const v=document.getElementById('new-cat').value.trim();if(v&&!cats.includes(v)){cats.push(v);saveAll();document.getElementById('new-cat').value='';renderCats();renderDashboard();renderMonths();}});
+    document.getElementById('dash-cat-select').addEventListener('change',e=>{const sel=e.target.value;const detail=document.getElementById('dash-cat-detail');detail.innerHTML='';if(!sel)return;txs.filter(t=>getMonthKey(t.date)===getMonthKey(new Date())&&t.cat===sel).forEach(t=>{const li=document.createElement('li');li.textContent=`${t.date} - €${t.amt.toFixed(2)}: ${t.desc}`;detail.append(li);});});
+    document.getElementById('month-select').addEventListener('change',e=>{const m=e.target.value;if(!m)return document.getElementById('month-preview').style.display='none';renderDetail(m);document.getElementById('month-preview').style.display='';});
+    window.addEventListener('load',()=>{document.getElementById('dash-date').value=new Date().toISOString().slice(0,10);renderCats();renderMonths();renderDashboard();showSection('dashboard-section');document.getElementById('delete-month-select').innerHTML='<option value="">Seleziona mese</option>'+Array.from(new Set(txs.map(t=>getMonthKey(t.date)))).sort().map(m=>`<option value="${m}">${m}</option>`).join('');});
+    document.querySelector('main').addEventListener('click',()=>{sidebar.classList.remove('active');overlay.classList.remove('active');});
   </script>
+</body>
+</html>
